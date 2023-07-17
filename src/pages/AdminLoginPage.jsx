@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import MkdSDK from "../utils/MkdSDK";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../authContext";
+import Toast from "../components/Toast";
 
 const AdminLoginPage = () => {
+  const [showToast, setShowToast] = useState(false);
+
   const schema = yup
     .object({
       email: yup.string().email().required(),
@@ -28,6 +31,20 @@ const AdminLoginPage = () => {
   const onSubmit = async (data) => {
     let sdk = new MkdSDK();
     //TODO
+    sdk
+      .login(data.email, data.password, "admin")
+      .then(() => {
+        dispatch({ type: "LOGIN_SUCCESS" });
+        setShowToast(true);
+
+        setTimeout(() => {
+          navigate("/snackbar");
+        }, 3000);
+      })
+      .catch((error) => {
+        setError("email", { type: "manual", message: "User not valid" });
+        console.log(error);
+      });
   };
 
   return (
@@ -81,6 +98,7 @@ const AdminLoginPage = () => {
           />
         </div>
       </form>
+      <Toast showToast={showToast} message="Logged in successfully"></Toast>
     </div>
   );
 };

@@ -14,8 +14,15 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
       //TODO
+      const { user, token, role } = action.payload;
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
       return {
         ...state,
+        isAuthenticated: true,
+        user,
+        token,
+        role,
       };
     case "LOGOUT":
       localStorage.clear();
@@ -23,6 +30,8 @@ const reducer = (state, action) => {
         ...state,
         isAuthenticated: false,
         user: null,
+        token: null,
+        role: null,
       };
     default:
       return state;
@@ -46,6 +55,18 @@ const AuthProvider = ({ children }) => {
 
   React.useEffect(() => {
     //TODO
+    const checkAuthentication = async () => {
+      let isAuthenticated = false;
+      if (isAuthenticated) {
+        dispatch({ type: "LOGIN", payload: { user, token, role } });
+      } else {
+        dispatch({ type: "LOGOUT" });
+      }
+    };
+    checkAuthentication().catch((error) => {
+      console.log(error);
+      dispatch({ type: "LOGOUT" });
+    });
   }, []);
 
   return (

@@ -5,6 +5,7 @@ import SnackBar from "./components/SnackBar";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
+const role = "admin";
 
 function renderRoutes(role) {
   switch (role) {
